@@ -1,35 +1,38 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>State Management Graph</title>
-    </head>
-    <body>
+<head>
+    <title>State Management Graph</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body>
+    <div id="container">
         <h1>State Management Graph</h1>
         <div id="graph"></div>
         <h2>Current State</h2>
         <pre id="state"></pre>
-        <script>
-            const graphDiv = document.getElementById('graph');
-            const stateDiv = document.getElementById('state');
-            
-            const ws = new WebSocket("ws://127.0.0.1:8000/ws");
+    </div>
+    <script>
+        const graphDiv = document.getElementById('graph');
+        const stateDiv = document.getElementById('state');
+        
+        const ws = new WebSocket("ws://127.0.0.1:8000/ws");
 
-            ws.onmessage = function(event) {
-                const data = JSON.parse(event.data);
-                graphDiv.innerHTML = data.graph;
-                stateDiv.textContent = JSON.stringify(data.state, null, 2);
-                if (data.completed) {
-                    ws.close();
-                }
-            };
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            graphDiv.innerHTML = data.graph;
+            stateDiv.textContent = JSON.stringify(data.state, null, 2);
+            if (data.completed) {
+                ws.close();
+            }
+        };
 
-            ws.onclose = function(event) {
-                console.log('WebSocket connection closed:', event);
-            };
+        ws.onclose = function(event) {
+            console.log('WebSocket connection closed:', event);
+        };
 
-            ws.onerror = function(error) {
-                console.error('WebSocket error observed:', error);
-            };
-        </script>
-    </body>
+        ws.onerror = function(error) {
+            console.error('WebSocket error observed:', error);
+        };
+    </script>
+</body>
 </html>

@@ -48,5 +48,6 @@ async def websocket_endpoint(websocket: WebSocket):
     finally:
         try:
             await websocket.close()
-        except RuntimeError as e:
-            print(f"WebSocket close error: {e}")
+            print("WebSocket closed gracefully.")
+        except RuntimeError:
+            pass  # Do nothing if the WebSocket is already closed
