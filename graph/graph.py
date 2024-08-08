@@ -26,11 +26,12 @@ class Graph:
         current_node = self.entry_point
         while current_node:
             self.active_node = current_node
-            yield self.visualize(current_node)
+            # Update state and visualization synchronously
             print(f"Executing {current_node}")
-            time.sleep(1)  # Add delay to visualize the transition
             next_node = self.nodes[current_node](self.state)
+            yield self.visualize(current_node)
             current_node = next_node
+            time.sleep(5)  # Add delay to visualize the transition
 
     def visualize(self, active_node=None):
         dot = graphviz.Digraph(comment='State Management Graph')
