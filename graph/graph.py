@@ -10,6 +10,7 @@ class Graph:
         self.active_node = None
         self.state = State()
         self.graph_generator = None
+        self.completed = False  # Flag to indicate completion
 
     def add_node(self, name, func):
         self.nodes[name] = func
@@ -31,7 +32,10 @@ class Graph:
             next_node = self.nodes[current_node](self.state)
             yield self.visualize(current_node)
             current_node = next_node
-            time.sleep(5)  # Add delay to visualize the transition
+            if current_node is None:
+                self.completed = True  # Set the completed flag
+                break
+            time.sleep(1)  # Add delay to visualize the transition
 
     def visualize(self, active_node=None):
         dot = graphviz.Digraph(comment='State Management Graph')

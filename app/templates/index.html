@@ -17,11 +17,17 @@
                 const data = await response.json();
                 graphDiv.innerHTML = data.graph;
                 stateDiv.textContent = JSON.stringify(data.state, null, 2);
+
+                if (data.completed) {
+                    return false;  // Stop fetching if the graph is completed
+                }
+                return true;
             }
 
             async function updateGraph() {
-                while (true) {
-                    await fetchGraph();
+                let continueFetching = true;
+                while (continueFetching) {
+                    continueFetching = await fetchGraph();
                     await new Promise(resolve => setTimeout(resolve, 1000));
                 }
             }

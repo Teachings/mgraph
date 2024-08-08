@@ -18,6 +18,12 @@ async def get(request: Request):
 
 @router.get("/graph")
 async def get_graph():
+    if graph.completed:
+        return {
+            "graph": graph.visualize('END'),
+            "state": graph.state.data,
+            "completed": True
+        }
     try:
         graph_data = next(graph.graph_generator)
     except StopIteration:
@@ -25,5 +31,6 @@ async def get_graph():
 
     return {
         "graph": graph_data,
-        "state": graph.state.data
+        "state": graph.state.data,
+        "completed": graph.completed
     }
