@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>State Management Graph</title>
+    </head>
+    <body>
+        <h1>State Management Graph</h1>
+        <div id="graph"></div>
+        <h2>Current State</h2>
+        <pre id="state"></pre>
+        <script>
+            const graphDiv = document.getElementById('graph');
+            const stateDiv = document.getElementById('state');
+            
+            async function fetchGraph() {
+                const response = await fetch('/graph');
+                const data = await response.json();
+                graphDiv.innerHTML = data.graph;
+                stateDiv.textContent = JSON.stringify(data.state, null, 2);
+            }
+
+            async function updateGraph() {
+                while (true) {
+                    await fetchGraph();
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+
+            updateGraph();
+        </script>
+    </body>
+</html>

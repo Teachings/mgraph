@@ -1,0 +1,7 @@
+python-dotenv
+termcolor
+fastapi 
+uvicorn
+graphviz
+websockets
+jinja2
