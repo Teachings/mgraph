@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Request
+import asyncio
+from fastapi import APIRouter, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from graph.setup import setup_graph
@@ -16,21 +17,37 @@ async def startup_event():
 async def get(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@router.get("/graph")
-async def get_graph():
-    if graph.completed:
-        return {
-            "graph": graph.visualize('END'),
-            "state": graph.state.data,
-            "completed": True
-        }
+@router.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
     try:
-        graph_data = next(graph.graph_generator)
-    except StopIteration:
-        graph_data = graph.visualize('END')  # Ensure the end node is visualized
+        while True:
+            if graph.completed:
+                await websocket.send_json({
+                    "graph": graph.visualize('END'),
+                    "state": graph.state.data,
+                    "completed": True
+                })
+                break
+            try:
+                graph_data = next(graph.graph_generator)
+            except StopIteration:
+                graph_data = graph.visualize('END')
+                graph.completed = True
 
-    return {
-        "graph": graph_data,
-        "state": graph.state.data,
-        "completed": graph.completed
-    }
+            await websocket.send_json({
+                "graph": graph_data,
+                "state": graph.state.data,
+                "completed": graph.completed
+            })
+            await asyncio.sleep(1)  # Delay to visualize the transition
+    except WebSocketDisconnect:
+        print("Client disconnected")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+    finally:
+        try:
+            await websocket.close()
+            print("WebSocket closed gracefully.")
+        except RuntimeError:
+            pass  # Do nothing if the WebSocket is already closed

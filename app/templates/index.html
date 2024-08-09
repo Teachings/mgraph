@@ -1,38 +1,16 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>State Management Graph</title>
-    </head>
-    <body>
+<head>
+    <title>State Management Graph</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body>
+    <div id="container">
         <h1>State Management Graph</h1>
         <div id="graph"></div>
         <h2>Current State</h2>
         <pre id="state"></pre>
-        <script>
-            const graphDiv = document.getElementById('graph');
-            const stateDiv = document.getElementById('state');
-            
-            async function fetchGraph() {
-                const response = await fetch('/graph');
-                const data = await response.json();
-                graphDiv.innerHTML = data.graph;
-                stateDiv.textContent = JSON.stringify(data.state, null, 2);
-
-                if (data.completed) {
-                    return false;  // Stop fetching if the graph is completed
-                }
-                return true;
-            }
-
-            async function updateGraph() {
-                let continueFetching = true;
-                while (continueFetching) {
-                    continueFetching = await fetchGraph();
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                }
-            }
-
-            updateGraph();
-        </script>
-    </body>
+    </div>
+    <script src="/static/script.js" defer></script>
+</body>
 </html>

@@ -1,3 +1,8 @@
+def node_setup(state):
+    print("Executing Node setup")
+    state.update('step', 'setup')
+    return 'A'
+
 def node_a(state):
     print("Executing Node A")
     state.update('step', 'A')
@@ -6,7 +11,16 @@ def node_a(state):
 def node_b(state):
     print("Executing Node B")
     state.update('step', 'B')
-    return 'C'
+    #conditional edge logic
+    if (2>1):
+        return 'C'
+    else:
+        return 'D'
+
+def node_d(state):
+    print("Executing Node D")
+    state.update('step', 'D')
+    return 'END'
 
 def node_c(state):
     print("Executing Node C")
